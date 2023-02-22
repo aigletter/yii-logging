@@ -7,3 +7,5 @@ config/console.php
 config/db.php
 yii
 composer.lock
+.phpunit.result.cache
+.env

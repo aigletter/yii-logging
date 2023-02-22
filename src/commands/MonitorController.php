@@ -4,19 +4,22 @@ namespace aigletter\logging\commands;
 
 use aigletter\logging\contracts\FileReaderInterface;
 use aigletter\logging\contracts\LoggingInterface;
+use aigletter\logging\contracts\ParserInterface;
 use aigletter\logging\Module;
 use yii\console\Controller;
 use yii\console\ExitCode;
 
 class MonitorController extends Controller
 {
+    /**
+     * @var string
+     */
     public $logFile;
 
-    public function __construct($id, $module, $config = [])
-    {
-        parent::__construct($id, $module, $config);
-    }
-
+    /**
+     * @param $actionID
+     * @return string[]
+     */
     public function options($actionID)
     {
         return array_merge(
@@ -25,11 +28,19 @@ class MonitorController extends Controller
         );
     }
 
+    /**
+     * @param LoggingInterface $logging
+     * @return int
+     */
     public function actionIndex(LoggingInterface $logging)
     {
         try {
             $result = $logging->monitor($this->logFile);
-            $this->stdout($result . ' items was added successfully');
+            if ($result) {
+                $this->stdout($result . ' items was added successfully' . PHP_EOL);
+            } else {
+                $this->stdout('New items were not found' . PHP_EOL);
+            }
         } catch (\Throwable $throwable) {
             $this->stderr('Error: ' . $throwable->getMessage() . PHP_EOL);
             return ExitCode::UNSPECIFIED_ERROR;
@@ -38,6 +49,12 @@ class MonitorController extends Controller
         return ExitCode::OK;
     }
 
+    /**
+     * @param $startDate
+     * @param $finishDate
+     * @param LoggingInterface $logging
+     * @return int
+     */
     public function actionFind($startDate, $finishDate, LoggingInterface $logging)
     {
         try {
@@ -57,6 +74,12 @@ class MonitorController extends Controller
         return ExitCode::OK;
     }
 
+    /**
+     * @param $startDate
+     * @param $finishDate
+     * @param LoggingInterface $logging
+     * @return int
+     */
     public function actionCount($startDate, $finishDate, LoggingInterface $logging)
     {
         try {

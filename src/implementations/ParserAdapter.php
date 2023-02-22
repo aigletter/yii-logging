@@ -8,8 +8,14 @@ use Kassner\LogParser\LogParser;
 
 class ParserAdapter implements ParserInterface
 {
+    /**
+     * @var LogParser
+     */
     protected $parser;
 
+    /**
+     * @return array
+     */
     protected function getFieldMap()
     {
         return [
@@ -35,11 +41,21 @@ class ParserAdapter implements ParserInterface
         ];
     }
 
-    public function __construct(string $format)
+    /**
+     * Default nginx format
+     * 127.0.0.1 - - [17/Feb/2023:19:07:40 +0000] "GET / HTTP/1.1" 500 39 "-" "Mozilla/5.0 (X11; Linux x86_64) ..."
+     * @param string $logFormat
+     */
+    public function __construct(string $logFormat)
     {
-        $this->parser = new LogParser($format);
+        $this->parser = new LogParser($logFormat);
     }
 
+    /**
+     * @param string $line
+     * @return LogDto
+     * @throws \Kassner\LogParser\FormatException
+     */
     public function parse(string $line): LogDto
     {
         $result = $this->parser->parse($line);
@@ -47,6 +63,10 @@ class ParserAdapter implements ParserInterface
         return $this->map($result);
     }
 
+    /**
+     * @param object $result
+     * @return LogDto
+     */
     protected function map(object $result): LogDto
     {
         $dto = new LogDto();
@@ -67,6 +87,11 @@ class ParserAdapter implements ParserInterface
         return $dto;
     }
 
+    /**
+     * @param $value
+     * @param $type
+     * @return mixed
+     */
     protected function format($value, $type)
     {
         if (is_callable($type)) {
@@ -86,8 +111,13 @@ class ParserAdapter implements ParserInterface
         return $value;
     }
 
+    /**
+     * @param $value
+     * @return string
+     * @throws \Exception
+     */
     protected function formatDateTime($value)
     {
-        return (new \DateTime($value))->format('Y-m-d H:i:s.v');
+        return (new \DateTime($value))->format('Y-m-d H:i:s');
     }
 }
