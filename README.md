@@ -33,6 +33,19 @@
 ]
 ```
 
+Якщо для логування використовуюється специфічне з'єднання (не 'db'), потрібно добавити запис
+
+```php
+[
+    'modules' => [
+        'logging' => [
+            'class' => \aigletter\logging\Module::class,
+            'db' => 'specific'
+        ],
+    ],
+]
+```
+
 ## Configuration
 
 **defaultLogFile**
@@ -54,7 +67,7 @@
 * single - режим читання і запису в базу построково
 * batch - пакетний режим читання і запису в базу
 
-По замовчуванню: single
+По замовчуванню: batch
 
 Доступні константи классу aigletter\logging\components\Logging відповідно:
 
