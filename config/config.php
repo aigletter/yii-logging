@@ -26,7 +26,7 @@ return [
             //'migrationPath' => null, // allows to disable not namespaced migration completely
         ],
     ],
-    //'db' => 'db',
+    'db' => 'db',
     'params' => [
         'defaultLogFile' => '/var/log/nginx/access.log',
         // Default log format is "combined"

@@ -24,6 +24,11 @@ class Module extends \yii\base\Module
         $config = require dirname(__DIR__) . '/config/config.php';
         $config['params'] = ArrayHelper::merge($config['params'], $this->params);
         $config['controllerMap'] = ArrayHelper::merge($config['controllerMap'], $this->controllerMap);
+
+        if (empty($this->db)) {
+            $this->db = $config['db'];
+        }
+        unset($config['db']);
         
         Yii::configure($this, $config);
 
