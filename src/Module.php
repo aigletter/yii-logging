@@ -9,17 +9,13 @@ use aigletter\logging\implementations\ParserAdapter;
 use Symfony\Component\Dotenv\Dotenv;
 use Yii;
 use yii\console\Application;
+use yii\db\Connection;
 use yii\di\Instance;
 use yii\helpers\ArrayHelper;
 
 class Module extends \yii\base\Module
 {
     public $db;
-
-    public function __construct($id, $parent = null, $config = [])
-    {
-        parent::__construct($id, $parent, $config);
-    }
 
     public function init()
     {
@@ -71,5 +67,10 @@ class Module extends \yii\base\Module
                 ['logFormat' => $this->params['logFormat']],
             ]
         ]);
+    }
+    
+    public function getDb(): Connection
+    {
+        return \Yii::$app->get($this->db);
     }
 }

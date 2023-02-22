@@ -26,12 +26,12 @@ return [
             //'migrationPath' => null, // allows to disable not namespaced migration completely
         ],
     ],
-    'db' => 'db',
+    //'db' => 'db',
     'params' => [
         'defaultLogFile' => '/var/log/nginx/access.log',
         // Default log format is "combined"
         'logFormat' => '%h %l %u %t "%r" %>s %O "%{Referer}i" \"%{User-Agent}i"',
-        'processMode' => Logging::PROCESS_MODE_SINGLE,
+        'processMode' => Logging::PROCESS_MODE_BATCH,
         'batchSize' => 5,
         'modelClass' => Log::class,
     ]

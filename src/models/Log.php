@@ -22,9 +22,7 @@ class Log extends ActiveRecord
 {
     public static function getDb()
     {
-        $db = \Yii::$app->getModule('logging')?->db;
-
-        return \Yii::$app->get($db);
+        return \Yii::$app->getModule('logging')?->getDb();
     }
 
     public function setOrigin($value)

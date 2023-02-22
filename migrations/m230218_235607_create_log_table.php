@@ -20,16 +20,15 @@ class m230218_235607_create_log_table extends Migration
             'remoteAddr' => $this->string(),
             'remoteUser' => $this->string(),
             'timeLocal' => $this->timestamp(),
-            'request' => $this->string(),
+            'request' => $this->text(),
             'status' => $this->integer(),
             'bodyBytesSent' => $this->integer(),
-            'httpReferer' => $this->string(),
+            'httpReferer' => $this->text(),
             'httpUserAgent' => $this->string(),
             // VARCHAR тому що в Memory не підтримуються тип TEXT
-            'origin' => $this->string(),
-            //'PRIMARY KEY id'
-            // Engine взяв такий, тому що він є як в MySQL так і в ClickHouse
-        ], 'ENGINE = Memory');
+            'origin' => $this->text(),
+            'PRIMARY KEY (id)'
+        ]);
     }
 
     /**

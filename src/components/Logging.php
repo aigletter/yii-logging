@@ -112,8 +112,10 @@ class Logging extends Component implements LoggingInterface
             $items[$hash] = $item;
         }
 
+        /** @var ActiveQuery $query */
+        $query = $this->modelClass::find();
         $existingIds = array_column(
-            Log::find()->select('id')->where(['id' => array_keys($items)])->all(),
+            $query->select('id')->where(['id' => array_keys($items)])->all(),
             'id'
         );
 
@@ -185,8 +187,7 @@ class Logging extends Component implements LoggingInterface
             array_keys($items),
             array_values($items)
         );
-
-
-        \Yii::$app->db->createCommand()->batchInsert(Log::tableName(), $keys, $values)->execute();
+        
+        \Yii::$app->getModule('logging')?->getDb()->createCommand()->batchInsert($this->modelClass::tableName(), $keys, $values)->execute();
     }
 }
