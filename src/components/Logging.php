@@ -8,51 +8,52 @@ use aigletter\logging\dto\LogDto;
 use aigletter\logging\implementations\FileReader;
 use aigletter\logging\implementations\FileReaderFilter;
 use aigletter\logging\models\Log;
+use yii\base\Component;
+use yii\db\ActiveQuery;
+use yii\db\ActiveQueryInterface;
+use yii\db\ActiveRecord;
 
-class Logging implements LoggingInterface
+class Logging extends Component implements LoggingInterface
 {
-    public const DEFAULT_LOG_FORMAT = '%h %l %u %t "%r" %>s %O "%{Referer}i" \"%{User-Agent}i"';
-
     public const DEFAULT_LOG_FILE = '/var/log/nginx/access.log';
 
     public const DEFAULT_BATCH_SIZE = 1000;
 
-    public const PROCESS_TYPE_SINGLE = 'single';
+    public const PROCESS_MODE_SINGLE = 'single';
 
-    public const PROCESS_TYPE_BATCH = 'batch';
+    public const PROCESS_MODE_BATCH = 'batch';
 
     /**
      * @var string
      */
     protected $defaultLogFile;
 
-    protected $processType;
+    protected $modelClass;
+
+    protected $processMode;
 
     protected $batchSize;
-
-    /**
-     * @var string
-     */
-    protected $defaultLogFormat;
 
     protected $parser;
 
     public function __construct(
         ParserInterface $parser,
-        ?string $processType = self::PROCESS_TYPE_SINGLE,
+        string $modelClass,
+        ?string $processMode = self::PROCESS_MODE_SINGLE,
         ?string $batchSize = self::DEFAULT_BATCH_SIZE,
         ?string $defaultLogFile = self::DEFAULT_LOG_FILE,
-        ?string $defaultLogFormat = self::DEFAULT_LOG_FORMAT
+        $config = []
     ) {
         $this->parser = $parser;
-        $this->processType = $processType;
+        $this->modelClass  = $modelClass;
+        $this->processMode = $processMode;
         $this->batchSize = $batchSize;
         $this->defaultLogFile = $defaultLogFile;
-        $this->defaultLogFormat = $defaultLogFormat;
+
+        parent::__construct($config);
     }
 
     /**
-     * 127.0.0.1 - - [17/Feb/2023:19:07:40 +0000] "GET / HTTP/1.1" 500 39 "-" "Mozilla/5.0 (X11; Linux x86_64) ..."
      * @param string|null $logFile
      * @param string|null $logFormat
      * @return int
@@ -64,7 +65,7 @@ class Logging implements LoggingInterface
             new FileReader($logFile ?? $this->defaultLogFile)
         );
 
-        if ($this->processType === self::PROCESS_TYPE_BATCH) {
+        if ($this->processMode === self::PROCESS_MODE_BATCH) {
             return $this->processBatch($fileReader);
         }
 
@@ -73,7 +74,9 @@ class Logging implements LoggingInterface
 
     public function findByDates(\DateTimeInterface $startDate, \DateTimeInterface $finishDate): array
     {
-        return Log::find()->select('origin')->where([
+        /** @var ActiveQuery $query */
+        $query = $this->modelClass::find();
+        return $query->select('origin')->where([
             'between',
             'timeLocal',
             $startDate->format('Y-m-d H:i:s'),
@@ -83,7 +86,9 @@ class Logging implements LoggingInterface
 
     public function countByDates(\DateTimeInterface $startDate, \DateTimeInterface $finishDate): int
     {
-        return Log::find()->select('origin')->where([
+        /** @var ActiveQuery $query */
+        $query = $this->modelClass::find();
+        return $query->select('origin')->where([
             'between',
             'timeLocal',
             $startDate->format('Y-m-d H:i:s'),
@@ -136,6 +141,7 @@ class Logging implements LoggingInterface
             if (!Log::find()->where(['id' => $hash])->exists()) {
                 $item = $this->parser->parse($line);
                 $item->origin = trim($line);
+                //$item->timeLocal = 'toDateTime(' . $item->timeLocal . ')';
                 $this->addItem($hash, $item);
                 $counter++;
             }
@@ -145,7 +151,8 @@ class Logging implements LoggingInterface
     }
 
     protected function addItem(string $id, LogDto $dto) {
-        $entity = new Log();
+        /** @var ActiveRecord $entity */
+        $entity = new ($this->modelClass)();
         $entity->id = $id;
         $entity->setAttributes((array) $dto, false);
 

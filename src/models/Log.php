@@ -2,9 +2,12 @@
 
 namespace aigletter\logging\models;
 
+use yii\base\UnknownPropertyException;
 use yii\db\ActiveRecord;
+use yii\helpers\StringHelper;
 
 /**
+ * @property $id
  * @property $remoteAddr;
  * @property $remoteUser;
  * @property $timeLocal;
@@ -13,21 +16,19 @@ use yii\db\ActiveRecord;
  * @property $bodyBytesSent;
  * @property $httpReferer;
  * @property $httpUserAgent;
+ * @property $origin
  */
 class Log extends ActiveRecord
 {
-    public function getTimeLocal()
+    public static function getDb()
     {
-        $t = '';
+        $db = \Yii::$app->getModule('logging')?->db;
+
+        return \Yii::$app->get($db);
     }
 
-    public function setTimeLocal($value)
+    public function setOrigin($value)
     {
         $t = '';
-    }
-
-    public function __set($name, $value)
-    {
-        parent::__set($name, $value);
     }
 }
