@@ -22,18 +22,19 @@ class Module extends \yii\base\Module
         parent::init();
 
         $config = require dirname(__DIR__) . '/config/config.php';
-        $config['params'] = ArrayHelper::merge($config['params'], $this->params);
+        //$config['params'] = ArrayHelper::merge($config['params'], $this->params);
+        $config['params'] = $this->mergeParams($config['params'], $this->params);
         $config['controllerMap'] = ArrayHelper::merge($config['controllerMap'], $this->controllerMap);
 
         if (empty($this->db)) {
             $this->db = $config['db'];
         }
         unset($config['db']);
-        
+
         Yii::configure($this, $config);
 
         $this->setDefinitions();
-        
+
         //$this->db = Yii::$app->get($this->params['db']);
 
         if (Yii::$app instanceof Application) {
@@ -41,6 +42,17 @@ class Module extends \yii\base\Module
             Yii::setAlias('@aigletter/logging/migrations', dirname(__DIR__) . '/migrations');
             $this->controllerNamespace = 'aigletter\logging\commands';
         }
+    }
+
+    protected function mergeParams($config, $custom)
+    {
+        foreach ($config as $key => $value) {
+            if (isset($custom[$key])) {
+                $config[$key] = $custom[$key];
+            }
+        }
+
+        return $config;
     }
 
     protected function setDefinitions()
