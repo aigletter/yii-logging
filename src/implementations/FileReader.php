@@ -22,27 +22,27 @@ class FileReader implements \Iterator
     {
         @fclose($this->handle);
     }
-    public function current()
+    public function current(): mixed
     {
         return fgets($this->handle);
     }
 
-    public function next()
+    public function next(): void
     {
         $this->index++;
     }
 
-    public function key()
+    public function key(): mixed
     {
         return $this->index;
     }
 
-    public function valid()
+    public function valid(): bool
     {
         return !feof($this->handle);
     }
 
-    public function rewind()
+    public function rewind(): void
     {
         rewind($this->handle);
 
