@@ -14,8 +14,8 @@
   },
   "repositories": [
     {
-      "type": "git",
-      "url": ""
+      "type": "github",
+      "url": "git@github.com:aigletter/yii-logging.git"
     }
   ]
 }
