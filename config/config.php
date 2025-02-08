@@ -1,21 +1,13 @@
 <?php
 
-use aigletter\logging\commands\MigrateController;
-use aigletter\logging\components\LoggingService;
-use aigletter\logging\contracts\LoggingServiceInterface;
-use aigletter\logging\contracts\ParserInterface;
-use aigletter\logging\implementations\NginxParser;
-use aigletter\logging\models\Log;
+use aigletter\logging\infrastructure\commands\MigrateController;
+use aigletter\logging\application\LoggingService;
+use aigletter\logging\application\contracts\LoggingServiceInterface;
+use aigletter\logging\application\contracts\ParserInterface;
+use aigletter\logging\infrastructure\implementations\NginxParser;
+use aigletter\logging\infrastructure\models\Log;
 
 return [
-    'components' => [
-        LoggingServiceInterface::class => [
-            'class' => LoggingService::class,
-        ],
-        ParserInterface::class => [
-            'class' => NginxParser::class,
-        ]
-    ],
     'controllerMap' => [
         'migrate' => [
             'class' => MigrateController::class,

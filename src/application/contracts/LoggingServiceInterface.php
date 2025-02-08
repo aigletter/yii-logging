@@ -1,8 +1,8 @@
 <?php
 
-namespace aigletter\logging\contracts;
+namespace aigletter\logging\application\contracts;
 
-use aigletter\logging\models\Log;
+use aigletter\logging\application\dto\LogDto;
 
 interface LoggingServiceInterface
 {
@@ -15,7 +15,7 @@ interface LoggingServiceInterface
     /**
      * @param \DateTimeInterface $startDate
      * @param \DateTimeInterface $finishDate
-     * @return Log[]
+     * @return LogDto[]
      */
     public function findByDates(\DateTimeInterface $startDate, \DateTimeInterface $finishDate): array;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace aigletter\logging\dto;
+namespace aigletter\logging\application\dto;
 
 class LogDto
 {

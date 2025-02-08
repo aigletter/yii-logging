@@ -1,6 +1,6 @@
 <?php
 
-namespace aigletter\logging\contracts;
+namespace aigletter\logging\application\contracts;
 
 interface FileInterface extends \Iterator
 {

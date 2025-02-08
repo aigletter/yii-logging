@@ -1,6 +1,6 @@
 <?php
 
-namespace aigletter\logging\commands;
+namespace aigletter\logging\infrastructure\commands;
 
 class MigrateController extends \yii\console\controllers\MigrateController
 {

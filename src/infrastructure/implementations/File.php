@@ -1,8 +1,8 @@
 <?php
 
-namespace aigletter\logging\implementations;
+namespace aigletter\logging\infrastructure\implementations;
 
-use aigletter\logging\contracts\FileInterface;
+use aigletter\logging\application\contracts\FileInterface;
 
 class File implements FileInterface
 {

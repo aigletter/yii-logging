@@ -1,9 +1,9 @@
 <?php
 
-namespace aigletter\logging\implementations;
+namespace aigletter\logging\infrastructure\implementations;
 
-use aigletter\logging\contracts\StorageInterface;
-use aigletter\logging\dto\LogDto;
+use aigletter\logging\application\contracts\StorageInterface;
+use aigletter\logging\application\dto\LogDto;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 

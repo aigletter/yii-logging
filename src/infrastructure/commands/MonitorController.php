@@ -1,8 +1,8 @@
 <?php
 
-namespace aigletter\logging\commands;
+namespace aigletter\logging\infrastructure\commands;
 
-use aigletter\logging\contracts\LoggingServiceInterface;
+use aigletter\logging\application\contracts\LoggingServiceInterface;
 use yii\console\Controller;
 use yii\console\ExitCode;
 

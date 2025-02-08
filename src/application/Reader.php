@@ -1,11 +1,11 @@
 <?php
 
-namespace aigletter\logging\implementations;
+namespace aigletter\logging\application;
 
-use aigletter\logging\contracts\FileInterface;
-use aigletter\logging\contracts\ParserInterface;
-use aigletter\logging\contracts\ReaderInterface;
-use aigletter\logging\dto\LogDto;
+use aigletter\logging\application\contracts\FileInterface;
+use aigletter\logging\application\contracts\ParserInterface;
+use aigletter\logging\application\contracts\ReaderInterface;
+use aigletter\logging\application\dto\LogDto;
 
 class Reader implements ReaderInterface
 {

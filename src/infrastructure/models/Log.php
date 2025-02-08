@@ -1,10 +1,8 @@
 <?php
 
-namespace aigletter\logging\models;
+namespace aigletter\logging\infrastructure\models;
 
-use yii\base\UnknownPropertyException;
 use yii\db\ActiveRecord;
-use yii\helpers\StringHelper;
 
 /**
  * @property $id

@@ -1,14 +1,12 @@
 <?php
 
-namespace aigletter\logging\components;
+namespace aigletter\logging\application;
 
-use aigletter\logging\contracts\LoggingServiceInterface;
-use aigletter\logging\contracts\ReaderInterface;
-use aigletter\logging\contracts\StorageInterface;
-use aigletter\logging\models\Log;
-use yii\base\Component;
+use aigletter\logging\application\contracts\LoggingServiceInterface;
+use aigletter\logging\application\contracts\ReaderInterface;
+use aigletter\logging\application\contracts\StorageInterface;
 
-class LoggingService extends Component implements LoggingServiceInterface
+class LoggingService implements LoggingServiceInterface
 {
     public const DEFAULT_BATCH_SIZE = 100;
 
@@ -47,7 +45,6 @@ class LoggingService extends Component implements LoggingServiceInterface
      * @param string $defaultLogFile
      * @param string $processMode
      * @param int $batchSize
-     * @param array $config
      */
     public function __construct(
         ReaderInterface $reader,
@@ -55,7 +52,6 @@ class LoggingService extends Component implements LoggingServiceInterface
         string $defaultLogFile,
         string $processMode = self::PROCESS_MODE_SINGLE,
         int $batchSize = self::DEFAULT_BATCH_SIZE,
-        array $config = []
     ) {
         $this->reader = $reader;
         $this->storage = $storage;
@@ -66,9 +62,6 @@ class LoggingService extends Component implements LoggingServiceInterface
         }
         $this->processMode = $processMode;
         $this->batchSize = $batchSize;
-
-
-        parent::__construct($config);
     }
 
     /**

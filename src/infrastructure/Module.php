@@ -1,17 +1,17 @@
 <?php
 
-namespace aigletter\logging;
+namespace aigletter\logging\infrastructure;
 
-use aigletter\logging\components\LoggingService;
-use aigletter\logging\contracts\FileInterface;
-use aigletter\logging\contracts\LoggingServiceInterface;
-use aigletter\logging\contracts\ParserInterface;
-use aigletter\logging\contracts\ReaderInterface;
-use aigletter\logging\contracts\StorageInterface;
-use aigletter\logging\implementations\File;
-use aigletter\logging\implementations\NginxParser;
-use aigletter\logging\implementations\Reader;
-use aigletter\logging\implementations\Storage;
+use aigletter\logging\application\LoggingService;
+use aigletter\logging\application\contracts\FileInterface;
+use aigletter\logging\application\contracts\LoggingServiceInterface;
+use aigletter\logging\application\contracts\ParserInterface;
+use aigletter\logging\application\contracts\ReaderInterface;
+use aigletter\logging\application\Reader;
+use aigletter\logging\application\contracts\StorageInterface;
+use aigletter\logging\infrastructure\implementations\File;
+use aigletter\logging\infrastructure\implementations\NginxParser;
+use aigletter\logging\infrastructure\implementations\Storage;
 use Yii;
 use yii\console\Application;
 use yii\db\Connection;
@@ -31,7 +31,7 @@ class Module extends \yii\base\Module
     {
         parent::init();
 
-        $config = require dirname(__DIR__) . '/config/config.php';
+        $config = require dirname(__DIR__, 2) . '/config/config.php';
         $config['params'] = $this->mergeParams($config['params'], $this->params);
         $config['controllerMap'] = ArrayHelper::merge($config['controllerMap'], $this->controllerMap);
 
@@ -45,9 +45,9 @@ class Module extends \yii\base\Module
         $this->setDefinitions();
 
         if (Yii::$app instanceof Application) {
-            Yii::setAlias('@aigletter/logging/commands', __DIR__ . '/commands');
-            Yii::setAlias('@aigletter/logging/migrations', dirname(__DIR__) . '/migrations');
-            $this->controllerNamespace = 'aigletter\logging\commands';
+            Yii::setAlias('@aigletter/logging/infrastructure/commands', __DIR__ . '/commands');
+            Yii::setAlias('@aigletter/logging/migrations', dirname(__DIR__, 2) . '/migrations');
+            $this->controllerNamespace = 'aigletter\logging\infrastructure\commands';
         }
     }
 

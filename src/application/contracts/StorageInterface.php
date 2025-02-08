@@ -1,8 +1,8 @@
 <?php
 
-namespace aigletter\logging\contracts;
+namespace aigletter\logging\application\contracts;
 
-use aigletter\logging\dto\LogDto;
+use aigletter\logging\application\dto\LogDto;
 
 interface StorageInterface
 {

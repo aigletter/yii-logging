@@ -1,9 +1,9 @@
 <?php
 
-namespace aigletter\logging\implementations;
+namespace aigletter\logging\infrastructure\implementations;
 
-use aigletter\logging\contracts\ParserInterface;
-use aigletter\logging\dto\LogDto;
+use aigletter\logging\application\contracts\ParserInterface;
+use aigletter\logging\application\dto\LogDto;
 use Kassner\LogParser\LogParser;
 
 class NginxParser implements ParserInterface
