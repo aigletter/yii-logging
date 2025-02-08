@@ -126,7 +126,7 @@ php yii logging/monitor
 php yii logging/monitor /home/user/app/logs/access.log
 ```
 
-1. Команда поиска и вывода логов по датам.
+2. Команда поиска и вывода логов по датам.
 
 Эта команда требует 2 аргумента startDate и finishDate. Формат даты любой допустимый в php
 
