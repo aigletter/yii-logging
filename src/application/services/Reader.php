@@ -1,6 +1,6 @@
 <?php
 
-namespace aigletter\logging\application;
+namespace aigletter\logging\application\services;
 
 use aigletter\logging\application\contracts\FileInterface;
 use aigletter\logging\application\contracts\ParserInterface;

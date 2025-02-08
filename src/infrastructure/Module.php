@@ -2,19 +2,24 @@
 
 namespace aigletter\logging\infrastructure;
 
-use aigletter\logging\application\LoggingService;
 use aigletter\logging\application\contracts\FileInterface;
+use aigletter\logging\application\contracts\MonitorInterface;
 use aigletter\logging\application\contracts\LoggingServiceInterface;
 use aigletter\logging\application\contracts\ParserInterface;
 use aigletter\logging\application\contracts\ReaderInterface;
-use aigletter\logging\application\Reader;
 use aigletter\logging\application\contracts\StorageInterface;
+use aigletter\logging\application\monitors\BatchMonitor;
+use aigletter\logging\application\monitors\SingleMonitor;
+use aigletter\logging\application\LoggingService;
+use aigletter\logging\application\services\Reader;
 use aigletter\logging\infrastructure\implementations\File;
 use aigletter\logging\infrastructure\implementations\NginxParser;
 use aigletter\logging\infrastructure\implementations\Storage;
 use Yii;
 use yii\console\Application;
 use yii\db\Connection;
+use yii\di\Container;
+use yii\di\Instance;
 use yii\helpers\ArrayHelper;
 
 class Module extends \yii\base\Module
@@ -79,6 +84,7 @@ class Module extends \yii\base\Module
                     'defaultLogFile' => $this->params['defaultLogFile'],
                     'processMode' => $this->params['processMode'],
                     'batchSize' => $this->params['batchSize'],
+                    'handler' => Instance::of(MonitorInterface::class),
                 ]
             ],
             LoggingServiceInterface::class => [
@@ -104,6 +110,22 @@ class Module extends \yii\base\Module
             Storage::class => [
                 ['class' => Storage::class],
                 ['modelClass' => $this->params['modelClass'],]
+            ],
+            MonitorInterface::class => function (Container $container) {
+                if ($this->params['processMode'] === LoggingServiceInterface::PROCESS_MODE_BATCH) {
+                    return $container->get(BatchMonitor::class);
+                } elseif ($this->params['processMode'] === LoggingServiceInterface::PROCESS_MODE_SINGLE) {
+                    return $container->get(SingleMonitor::class);
+                }
+                throw new \InvalidArgumentException(sprintf(
+                    'Argument "processMode" must be %s or %s',
+                    LoggingServiceInterface::PROCESS_MODE_SINGLE,
+                    LoggingServiceInterface::PROCESS_MODE_BATCH,
+                ));
+            },
+            BatchMonitor::class => [
+                ['class' => BatchMonitor::class],
+                ['batchSize' => $this->params['batchSize']],
             ],
         ]);
     }

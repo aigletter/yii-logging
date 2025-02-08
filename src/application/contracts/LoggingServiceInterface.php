@@ -4,13 +4,11 @@ namespace aigletter\logging\application\contracts;
 
 use aigletter\logging\application\dto\LogDto;
 
-interface LoggingServiceInterface
+interface LoggingServiceInterface extends MonitorInterface
 {
-    /**
-     * @param string|null $logFile
-     * @return int
-     */
-    public function monitor(string $logFile = null): int;
+    public const PROCESS_MODE_SINGLE = 'single';
+
+    public const PROCESS_MODE_BATCH = 'batch';
 
     /**
      * @param \DateTimeInterface $startDate

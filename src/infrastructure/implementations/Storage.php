@@ -4,6 +4,7 @@ namespace aigletter\logging\infrastructure\implementations;
 
 use aigletter\logging\application\contracts\StorageInterface;
 use aigletter\logging\application\dto\LogDto;
+use aigletter\logging\infrastructure\models\Log;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
@@ -29,12 +30,16 @@ class Storage implements StorageInterface
      */
     public function findByStartDateAndFinishDate(\DateTimeInterface $startDate, \DateTimeInterface $finishDate): array
     {
-        return $this->getQuery()->select('origin')->where([
+        $records = $this->getQuery()->select('*')->where([
             'between',
             'timeLocal',
             $startDate->format('Y-m-d H:i:s'),
             $finishDate->format('Y-m-d H:i:s')
         ])->all();
+
+        return array_map(function (Log $record) {
+            return $this->arrayToDto($record->toArray());
+        }, $records);
     }
 
     /**
@@ -59,9 +64,8 @@ class Storage implements StorageInterface
     public function saveBatch(array $items): void
     {
         if ($items = $this->filterExistingItems($items)) {
-            // TODO Make dto properties/table columns mapping
             $values = array_map(function (LogDto $dto) {
-                return (array) $dto;
+                return $this->dtoToArray($dto);
             }, $items);
             $keys = array_keys($values[0]);
 
@@ -125,5 +129,32 @@ class Storage implements StorageInterface
     private function newActiveRecord(): ActiveRecord
     {
         return new ($this->modelClass)();
+    }
+
+    /**
+     * @param array $data
+     * @return LogDto
+     * @TODO Make good array/dto mapping
+     */
+    private function arrayToDto(array $data): LogDto
+    {
+        $dto = new LogDto();
+        foreach ($data as $key => $value) {
+            if (property_exists($dto, $key)) {
+                $dto->{$key} = $value;
+            }
+        }
+
+        return $dto;
+    }
+
+    /**
+     * @param LogDto $dto
+     * @return array
+     * @TODO Make good array/dto mapping
+     */
+    private function dtoToArray(LogDto $dto): array
+    {
+        return (array) $dto;
     }
 }

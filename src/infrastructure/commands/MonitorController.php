@@ -33,13 +33,9 @@ class MonitorController extends Controller
     {
         try {
             $result = $logging->monitor($this->logFile);
-            if ($result) {
-                $this->stdout($result . ' items was added successfully' . PHP_EOL);
-            } else {
-                $this->stdout('New items were not found' . PHP_EOL);
-            }
+            $this->stdout(sprintf('Handled %s log records', $result) . PHP_EOL);
         } catch (\Throwable $throwable) {
-            $this->stderr('Error: ' . $throwable->getMessage() . PHP_EOL);
+            $this->stderr(sprintf('Error: %s', $throwable->getMessage()) . PHP_EOL);
             return ExitCode::UNSPECIFIED_ERROR;
         }
 
@@ -64,7 +60,7 @@ class MonitorController extends Controller
                 $this->stdout($item->origin . PHP_EOL);
             }
         } catch (\Throwable $throwable) {
-            $this->stderr('Error: ' . $throwable->getMessage() . PHP_EOL);
+            $this->stderr(sprintf('Error: %s', $throwable->getMessage()) . PHP_EOL);
             return ExitCode::UNSPECIFIED_ERROR;
         }
 
@@ -87,7 +83,7 @@ class MonitorController extends Controller
 
             $this->stdout('Count items: ' . $count . PHP_EOL);
         } catch (\Throwable $throwable) {
-            $this->stderr('Error: ' . $throwable->getMessage() . PHP_EOL);
+            $this->stderr(sprintf('Error: %s', $throwable->getMessage()) . PHP_EOL);
             return ExitCode::UNSPECIFIED_ERROR;
         }
 

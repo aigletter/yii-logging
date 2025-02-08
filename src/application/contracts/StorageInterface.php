@@ -9,7 +9,7 @@ interface StorageInterface
     /**
      * @param \DateTimeInterface $startDate
      * @param \DateTimeInterface $finishDate
-     * @return array
+     * @return LogDto[]
      */
     public function findByStartDateAndFinishDate(\DateTimeInterface $startDate, \DateTimeInterface $finishDate): array;
 
