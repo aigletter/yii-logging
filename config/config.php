@@ -1,37 +1,35 @@
 <?php
 
 use aigletter\logging\commands\MigrateController;
-use aigletter\logging\components\Logging;
-use aigletter\logging\contracts\LoggingInterface;
+use aigletter\logging\components\LoggingService;
+use aigletter\logging\contracts\LoggingServiceInterface;
 use aigletter\logging\contracts\ParserInterface;
-use aigletter\logging\implementations\ParserAdapter;
+use aigletter\logging\implementations\NginxParser;
 use aigletter\logging\models\Log;
 
 return [
     'components' => [
-        LoggingInterface::class => [
-            'class' => Logging::class,
+        LoggingServiceInterface::class => [
+            'class' => LoggingService::class,
         ],
         ParserInterface::class => [
-            'class' => ParserAdapter::class,
+            'class' => NginxParser::class,
         ]
     ],
     'controllerMap' => [
         'migrate' => [
             'class' => MigrateController::class,
             'migrationNamespaces' => [
-                //'app\migrations',
                 'aigletter\logging\migrations',
             ],
-            //'migrationPath' => null, // allows to disable not namespaced migration completely
         ],
     ],
     'db' => 'db',
     'params' => [
-        'defaultLogFile' => '/var/log/nginx/access.log',
+        'defaultLogFile' => getenv('DEFAULT_LOG_FILE') ?: '/var/log/nginx/access.log',
         // Default log format is "combined"
         'logFormat' => '%h %l %u %t "%r" %>s %O "%{Referer}i" \"%{User-Agent}i"',
-        'processMode' => Logging::PROCESS_MODE_BATCH,
+        'processMode' => LoggingService::PROCESS_MODE_BATCH,
         'batchSize' => 5,
         'modelClass' => Log::class,
     ]

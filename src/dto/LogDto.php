@@ -5,6 +5,11 @@ namespace aigletter\logging\dto;
 class LogDto
 {
     /**
+     * @var string
+     */
+    public string $id;
+
+    /**
      * %a - remoteIp - Remote IP-address
      * @var string
      */
@@ -68,9 +73,7 @@ class LogDto
 
 
 
-
-
-
+    /*%%% FOR for FUTURE %%%*/
 
     /**
      * The percent sign

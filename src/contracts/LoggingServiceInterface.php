@@ -4,7 +4,7 @@ namespace aigletter\logging\contracts;
 
 use aigletter\logging\models\Log;
 
-interface LoggingInterface
+interface LoggingServiceInterface
 {
     /**
      * @param string|null $logFile

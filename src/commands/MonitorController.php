@@ -2,10 +2,7 @@
 
 namespace aigletter\logging\commands;
 
-use aigletter\logging\contracts\FileReaderInterface;
-use aigletter\logging\contracts\LoggingInterface;
-use aigletter\logging\contracts\ParserInterface;
-use aigletter\logging\Module;
+use aigletter\logging\contracts\LoggingServiceInterface;
 use yii\console\Controller;
 use yii\console\ExitCode;
 
@@ -29,10 +26,10 @@ class MonitorController extends Controller
     }
 
     /**
-     * @param LoggingInterface $logging
+     * @param LoggingServiceInterface $logging
      * @return int
      */
-    public function actionIndex(LoggingInterface $logging)
+    public function actionIndex(LoggingServiceInterface $logging)
     {
         try {
             $result = $logging->monitor($this->logFile);
@@ -52,10 +49,10 @@ class MonitorController extends Controller
     /**
      * @param $startDate
      * @param $finishDate
-     * @param LoggingInterface $logging
+     * @param LoggingServiceInterface $logging
      * @return int
      */
-    public function actionFind($startDate, $finishDate, LoggingInterface $logging)
+    public function actionFind($startDate, $finishDate, LoggingServiceInterface $logging)
     {
         try {
             $startDate = new \DateTime($startDate);
@@ -77,10 +74,10 @@ class MonitorController extends Controller
     /**
      * @param $startDate
      * @param $finishDate
-     * @param LoggingInterface $logging
+     * @param LoggingServiceInterface $logging
      * @return int
      */
-    public function actionCount($startDate, $finishDate, LoggingInterface $logging)
+    public function actionCount($startDate, $finishDate, LoggingServiceInterface $logging)
     {
         try {
             $startDate = new \DateTime($startDate);

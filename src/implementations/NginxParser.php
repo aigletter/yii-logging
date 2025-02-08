@@ -6,12 +6,22 @@ use aigletter\logging\contracts\ParserInterface;
 use aigletter\logging\dto\LogDto;
 use Kassner\LogParser\LogParser;
 
-class ParserAdapter implements ParserInterface
+class NginxParser implements ParserInterface
 {
     /**
      * @var LogParser
      */
-    protected $parser;
+    protected LogParser $parser;
+
+    /**
+     * Default nginx format
+     * 127.0.0.1 - - [17/Feb/2023:19:07:40 +0000] "GET / HTTP/1.1" 500 39 "-" "Mozilla/5.0 (X11; Linux x86_64) ..."
+     * @param string $logFormat
+     */
+    public function __construct(string $logFormat)
+    {
+        $this->parser = new LogParser($logFormat);
+    }
 
     /**
      * @return array
@@ -42,16 +52,6 @@ class ParserAdapter implements ParserInterface
     }
 
     /**
-     * Default nginx format
-     * 127.0.0.1 - - [17/Feb/2023:19:07:40 +0000] "GET / HTTP/1.1" 500 39 "-" "Mozilla/5.0 (X11; Linux x86_64) ..."
-     * @param string $logFormat
-     */
-    public function __construct(string $logFormat)
-    {
-        $this->parser = new LogParser($logFormat);
-    }
-
-    /**
      * @param string $line
      * @return LogDto
      * @throws \Kassner\LogParser\FormatException
@@ -59,8 +59,10 @@ class ParserAdapter implements ParserInterface
     public function parse(string $line): LogDto
     {
         $result = $this->parser->parse($line);
+        $dto = $this->map($result);
+        $dto->origin = trim($line);
 
-        return $this->map($result);
+        return $dto;
     }
 
     /**
@@ -92,7 +94,7 @@ class ParserAdapter implements ParserInterface
      * @param $type
      * @return mixed
      */
-    protected function format($value, $type)
+    private function format($value, $type): mixed
     {
         if (is_callable($type)) {
             return $type($value);

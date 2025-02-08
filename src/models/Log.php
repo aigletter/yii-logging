@@ -20,13 +20,19 @@ use yii\helpers\StringHelper;
  */
 class Log extends ActiveRecord
 {
+    /**
+     * @return string
+     */
+    public static function tableName()
+    {
+        return '{{logs}}';
+    }
+
+    /**
+     * @return \yii\db\Connection|null
+     */
     public static function getDb()
     {
         return \Yii::$app->getModule('logging')?->getDb();
-    }
-
-    public function setOrigin($value)
-    {
-        $t = '';
     }
 }

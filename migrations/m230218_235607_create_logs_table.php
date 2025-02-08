@@ -8,14 +8,14 @@ use yii\db\Migration;
 /**
  * Handles the creation of table `{{%log}}`.
  */
-class m230218_235607_create_log_table extends Migration
+class m230218_235607_create_logs_table extends Migration
 {
     /**
      * {@inheritdoc}
      */
     public function up()
     { 
-        $this->createTable('{{%log}}', [
+        $this->createTable('{{%logs}}', [
             'id' => $this->string(),
             'remoteAddr' => $this->string(),
             'remoteUser' => $this->string(),
@@ -36,6 +36,6 @@ class m230218_235607_create_log_table extends Migration
      */
     public function down()
     {
-        $this->dropTable('{{%log}}');
+        $this->dropTable('{{%logs}}');
     }
 }

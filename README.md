@@ -1,11 +1,13 @@
 # Yii2 logging
 
-Моніторить лог файл ngix та при знаходженні нових даних зберігає їх в базу даних
+- [Russian](https://github.com/aigletter/yii-logging/tree/master/docs/readme-ru.md)
+
+Моніторить лог файл nginx та при знаходженні нових даних зберігає їх в базу даних
 
 ## Install
 
-Добавити запис в composer.json проекта в секції require та repositories наступні записи:
-
+Добавити в composer.json проекта в секції require та repositories наступні записи:
+''
 ```json
 
 {
@@ -46,6 +48,15 @@
 ]
 ```
 
+## Migrations
+
+Для застосування міграції використовувати команди:
+
+~~~
+php yii logging/migrate
+php yii logging/migrate/down
+~~~
+
 ## Configuration
 
 **defaultLogFile**
@@ -56,11 +67,11 @@
 
 **logFormat**
 
-По замовчуванні використовується дефолтний формат ngix
+По замовчуванні використовується дефолтний формат nginx
 
 `%h %l %u %t "%r" %>s %O "%{Referer}i" \"%{User-Agent}i"`
 
-**processType**
+**processMode**
 
 Доступно 2 режими 
 
@@ -69,29 +80,29 @@
 
 По замовчуванню: batch
 
-Доступні константи классу aigletter\logging\components\Logging відповідно:
+Доступні константи класу aigletter\logging\components\Logging відповідно:
 
 * Logging::PROCESS_MODE_SINGLE
 * Logging::PROCESS_MODE_BATCH 
 
 **batchSize**
 
-Розмір пакета даних при використанні режиму batch
+Розмір пакета даних при використанні режиму batch (кількість рядків)
 
-По замовчуванню: 1000
+По замовчуванню: 100
 
-Перевизначити значення циї параметрів можна в конфігурації додатку, наприклад:
+Перевизначити значення цих параметрів можна в конфігурації додатку, наприклад:
 
 ```php
 [
     'modules' => [
         'logging' => [
             'class' => \aigletter\logging\Module::class,
-            // ... настройки модуля ...
+            // ... налаштування модуля ...
             'params' => [
                 'defaultLogFile' => '/home/user/app/logs/access.log',
                 'logFormat' => '%h %l %u %t "%r" %>s %O "%{Referer}i" \"%{User-Agent}i"',
-                'processMode' => \aigletter\logging\components\Logging::PROCESS_MODE_BATCH,
+                'processMode' => \aigletter\logging\components\LoggingService::PROCESS_MODE_BATCH,
                 'batchSize' => 200
             ],
         ],
@@ -130,5 +141,5 @@ php yii logging/monitor/find '2023-01-01 10:22:45' 2023-02-28
 Ця команда вимагає 2 аргумента startDate та finishDate. Формат дати будь який допустимий в php
 
 ```
-php yii logging/monitor/find 01.01.2023 28.02.2023
+php yii logging/monitor/count 01.01.2023 28.02.2023
 ```

@@ -2,27 +2,36 @@
 
 namespace aigletter\logging;
 
-use aigletter\logging\components\Logging;
-use aigletter\logging\contracts\LoggingInterface;
+use aigletter\logging\components\LoggingService;
+use aigletter\logging\contracts\FileInterface;
+use aigletter\logging\contracts\LoggingServiceInterface;
 use aigletter\logging\contracts\ParserInterface;
-use aigletter\logging\implementations\ParserAdapter;
-use Symfony\Component\Dotenv\Dotenv;
+use aigletter\logging\contracts\ReaderInterface;
+use aigletter\logging\contracts\StorageInterface;
+use aigletter\logging\implementations\File;
+use aigletter\logging\implementations\NginxParser;
+use aigletter\logging\implementations\Reader;
+use aigletter\logging\implementations\Storage;
 use Yii;
 use yii\console\Application;
 use yii\db\Connection;
-use yii\di\Instance;
 use yii\helpers\ArrayHelper;
 
 class Module extends \yii\base\Module
 {
-    public $db;
+    /**
+     * @var string
+     */
+    public string $db;
 
+    /**
+     * @return void
+     */
     public function init()
     {
         parent::init();
 
         $config = require dirname(__DIR__) . '/config/config.php';
-        //$config['params'] = ArrayHelper::merge($config['params'], $this->params);
         $config['params'] = $this->mergeParams($config['params'], $this->params);
         $config['controllerMap'] = ArrayHelper::merge($config['controllerMap'], $this->controllerMap);
 
@@ -35,8 +44,6 @@ class Module extends \yii\base\Module
 
         $this->setDefinitions();
 
-        //$this->db = Yii::$app->get($this->params['db']);
-
         if (Yii::$app instanceof Application) {
             Yii::setAlias('@aigletter/logging/commands', __DIR__ . '/commands');
             Yii::setAlias('@aigletter/logging/migrations', dirname(__DIR__) . '/migrations');
@@ -44,7 +51,12 @@ class Module extends \yii\base\Module
         }
     }
 
-    protected function mergeParams($config, $custom)
+    /**
+     * @param $config
+     * @param $custom
+     * @return mixed
+     */
+    private function mergeParams($config, $custom)
     {
         foreach ($config as $key => $value) {
             if (isset($custom[$key])) {
@@ -55,37 +67,51 @@ class Module extends \yii\base\Module
         return $config;
     }
 
-    protected function setDefinitions()
+    /**
+     * @return void
+     */
+    private function setDefinitions()
     {
         Yii::$container->setDefinitions([
-            LoggingInterface::class => [
-                'class' => Logging::class,
-                /*'parser' => Instance::of(ParserInterface::class),
-                'processMode' => $this->params['processMode'],
-                'batchSize' => $this->params['batchSize'],
-                'defaultLogFile' => $this->params['defaultLogFile'],*/
-            ],
-            ParserInterface::class => [
-                'class' => ParserAdapter::class,
-                //'logFormat' => $this->params['logFormat'],
-            ],
-            Logging::class => [
-                ['class' => Logging::class],
+            LoggingService::class => [
+                ['class' => LoggingService::class],
                 [
-                    'parser' => Instance::of(ParserInterface::class),
-                    'modelClass' => $this->params['modelClass'],
+                    'defaultLogFile' => $this->params['defaultLogFile'],
                     'processMode' => $this->params['processMode'],
                     'batchSize' => $this->params['batchSize'],
-                    'defaultLogFile' => $this->params['defaultLogFile'],
                 ]
             ],
-            ParserAdapter::class => [
-                ['class' => ParserAdapter::class],
+            LoggingServiceInterface::class => [
+                'class' => LoggingService::class,
+            ],
+            ParserInterface::class => [
+                'class' => NginxParser::class,
+                //'logFormat' => $this->params['logFormat'],
+            ],
+            StorageInterface::class => [
+                'class' => Storage::class,
+            ],
+            ReaderInterface::class => [
+                'class' => Reader::class,
+            ],
+            FileInterface::class => [
+                'class' => File::class,
+            ],
+            NginxParser::class => [
+                ['class' => NginxParser::class],
                 ['logFormat' => $this->params['logFormat']],
-            ]
+            ],
+            Storage::class => [
+                ['class' => Storage::class],
+                ['modelClass' => $this->params['modelClass'],]
+            ],
         ]);
     }
-    
+
+    /**
+     * @return Connection
+     * @throws \yii\base\InvalidConfigException
+     */
     public function getDb(): Connection
     {
         return \Yii::$app->get($this->db);
