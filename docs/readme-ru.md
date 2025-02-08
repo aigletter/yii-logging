@@ -10,7 +10,7 @@
 
 {
   "require": {
-    "aigletter/yii2-lib": "dev-master"
+    "aigletter/yii2-logging": "dev-master"
   },
   "repositories": [
     {
